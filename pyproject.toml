@@ -1,0 +1,32 @@
+[tool.isort]
+profile = "black"
+
+[tool.black]
+py311 = true
+line_length=90
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | node_modules
+)/
+'''
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+mypy_path = "./src"
+exclude = "tests_*|conftest"
+ignore_missing_imports = true
+
+
+[tool.django-stubs]
+django_settings_module = "core.settings"

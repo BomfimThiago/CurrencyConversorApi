@@ -1,0 +1,31 @@
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiExample
+from rest_framework import status
+
+from authentication.enums.docs import Tags
+from authentication.enums.messages import AuthMessages
+from core.utils.docs.typing import Docs
+
+from .serializers import TermsAcceptLatestResponseSerializer
+
+WRONG_CREDENTIALS_RESPONSE = OpenApiExample(
+    AuthMessages.WRONG_CREDENTIALS.value,
+    value={"detail": AuthMessages.WRONG_CREDENTIALS.value},
+    response_only=True,
+    status_codes=["401"],
+)
+
+docs: Docs = {
+    "request": None,
+    "tags": [Tags.TERMS.value],
+    "summary": "User can accept Terms of Agreement.",
+    "responses": {
+        status.HTTP_200_OK: TermsAcceptLatestResponseSerializer,
+        status.HTTP_201_CREATED: TermsAcceptLatestResponseSerializer,
+        status.HTTP_401_UNAUTHORIZED: OpenApiTypes.OBJECT,
+    },
+    "examples": [
+        WRONG_CREDENTIALS_RESPONSE,
+    ],
+    "methods": ["POST"],
+}
