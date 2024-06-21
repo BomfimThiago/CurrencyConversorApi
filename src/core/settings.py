@@ -61,7 +61,7 @@ THIRD_PARTY_APPS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
-PROJECT_APPS = ["core", "authentication"]
+PROJECT_APPS = ["core", "authentication", "transactions"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 

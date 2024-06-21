@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.enums.messages import TermsMessages
+from authentication.models.terms_of_agreement.models import TermsOfAgreement
 
 from .docs import get_latest
 from .serializers import TermsGetResponseSerializer
@@ -15,6 +16,8 @@ permission_classes = [AllowAny]
 
 
 class TermsOfAgreements(APIView):
+    queryset = TermsOfAgreement.objects.all()
+
     @extend_schema(**get_latest)
     def get(self, request: Request) -> Response:
         """
