@@ -264,3 +264,6 @@ SIMPLE_JWT = {
     "SIGNING_KEY": env.str("JWT_SECRET_KEY", default=SECRET_KEY),
     "AUTH_HEADER_TYPES": ("Bearer", "Token"),
 }
+
+EXCHANGERATES_API_URL = env.str("EXCHANGERATES_API_URL", default=None)
+EXCHANGERATES_API_KEY = env.str("EXCHANGERATES_API_KEY", default=None)

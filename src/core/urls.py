@@ -5,6 +5,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 from authentication import urls as auth_urls
 from core.views import health_check
+from transactions import urls as transactions_urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -14,6 +15,7 @@ urlpatterns = [
     path("docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path("docs/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("auth/", include(auth_urls)),
+    path("transactions/", include(transactions_urls)),
 ]
 
 if settings.ENVIRONMENT == "development":
