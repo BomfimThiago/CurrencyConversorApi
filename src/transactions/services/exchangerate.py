@@ -1,4 +1,3 @@
-import logging
 from decimal import Decimal
 
 import requests
@@ -6,8 +5,6 @@ import sentry_sdk
 from django.conf import settings
 
 from transactions.exceptions.exchangerate import ExchangeRatesAPIException
-
-logger = logging.getLogger("apps")
 
 
 class ExchangeRatesAPI:
@@ -17,6 +14,7 @@ class ExchangeRatesAPI:
     @staticmethod
     def get_exchange_rates(base_currency="EUR"):
         url = f"{ExchangeRatesAPI.BASE_URL}?base={base_currency}&access_key={ExchangeRatesAPI.API_KEY}"
+        # url = f"{ExchangeRatesAPI.BASE_URL}?base=USD&access_key={ExchangeRatesAPI.API_KEY}"
         try:
             response = requests.get(url)
             response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
@@ -24,17 +22,12 @@ class ExchangeRatesAPI:
             data = response.json()
             if "error" in data:
                 error_code = data["error"].get("code", "Unknown error code")
-                error_message = data["error"].get(
-                    "info", "No additional information provided"
-                )
-                logger.error("API error: %s - %s", error_code, error_message)
                 sentry_sdk.capture_exception(ExchangeRatesAPIException(error_code))
                 raise ExchangeRatesAPIException(error_code)
 
             return data["rates"]
         except requests.exceptions.RequestException as e:
             sentry_sdk.capture_exception(e)
-            logger.error("RequestException: %s", str(e))
             raise ExchangeRatesAPIException(
                 "An unknown error occurred while trying to access the ExchangeRates API."
             ) from e
