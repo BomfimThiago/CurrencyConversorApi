@@ -1,4 +1,5 @@
 name: "Currency Conversor Api Quality Check"
+
 on:
   pull_request:
     types:
@@ -6,9 +7,11 @@ on:
       - opened
     paths:
       - .
+
 defaults:
   run:
     working-directory: .
+
 jobs:
   test:
     name: 'Test'
@@ -42,9 +45,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
           cache-dependency-path: |
-            .src/core/config/requirements.txt
-            .src/core/config/dev.txt
-            .src/core/config/requirements/test.txt
+            src/core/config/requirements.txt
+            src/core/config/dev.txt
+            src/core/config/requirements/test.txt
       - run: make install-test-req
       - run: make coverage-test
       - name: Code Coverage Report
@@ -64,14 +67,14 @@ jobs:
         with:
           recreate: true
           path: code-coverage-results.md
-        OPTIONAL: add Codecov
-        - uses: codecov/codecov-action@v2
-          with:
-            token: ${{ secrets.CODECOV_TOKEN }}
-            env_vars: OS,PYTHON
-            fail_ci_if_error: true
-            verbose: true
-      
+      - name: Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          verbose: true
+
   lint:
     env:
       ENV: dev
@@ -90,9 +93,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
           cache-dependency-path: |
-            .src/core/config/requirements.txt
-            .src/core/config/dev.txt
-            .src/core/config/requirements/test.txt
+            src/core/config/requirements.txt
+            src/core/config/dev.txt
+            src/core/config/requirements/test.txt
       - run: make install-test-req
       - run: make install-dev-req
       - uses: reviewdog/action-black@v2
