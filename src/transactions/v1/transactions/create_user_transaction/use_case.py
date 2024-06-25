@@ -15,7 +15,6 @@ class CreateUserTransactionUseCase(BaseUseCase):
         Returns: The registered Transaction instance
         """
         rates = ExchangeRatesAPI.get_exchange_rates()
-        print("rates", rates)
         converted_amount, exchange_rate = ExchangeRatesAPI.convert_currency_via_eur(
             transaction_data["source_currency"],
             transaction_data["target_currency"],

@@ -11,4 +11,4 @@ def get_transactions_for_user(user: AbstractBaseUser) -> dict:
     Returns: The user's transactions
     """
     transactions = Transaction.objects.filter(user=user)
-    return {"transactions": transactions}
+    return transactions

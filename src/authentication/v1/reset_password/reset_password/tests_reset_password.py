@@ -89,6 +89,7 @@ def test_successful_reset_password_with_a_trimmable_new_password(
     assert response.json() == format_response(
         ResetPasswordMessages.RESET_PASSWORD_SUCCESSFULLY.value
     )
+
     user = authenticate(email=user_1.email, password=new_password)
     assert user
     assert user.id == user_1.id

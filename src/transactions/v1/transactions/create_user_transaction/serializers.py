@@ -5,7 +5,8 @@ from core.utils.serializer.inline_serializer import inline_serializer
 from transactions.exceptions.transactions import (
     TransactionSourceAmountMustBePositiveException,
 )
-from transactions.models import CURRENCY_CHOICES, Transaction
+from transactions.models import CURRENCY_CHOICES
+from transactions.v1.transactions.base_serializer import TransactionSerializer
 
 
 class CreateUserTransactionRequestSerializer(serializers.Serializer):
@@ -17,22 +18,6 @@ class CreateUserTransactionRequestSerializer(serializers.Serializer):
         if value <= 0:
             raise TransactionSourceAmountMustBePositiveException()
         return value
-
-
-class TransactionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Transaction
-        fields = (
-            "id",
-            "user",
-            "source_currency",
-            "source_amount",
-            "target_currency",
-            "converted_amount",
-            "exchange_rate",
-            "created",
-            "modified",
-        )
 
 
 class CreateUseTransactionResponseSerializer(BaseResponseSerializer):

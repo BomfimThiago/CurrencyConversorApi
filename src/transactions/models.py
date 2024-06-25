@@ -21,7 +21,7 @@ class Transaction(BaseModel):
         User,
         related_name="transactions",
         on_delete=models.CASCADE,
-        verbose_name=_("The User which is associated to this transaction"),
+        verbose_name=_("The User who is associated to this transaction"),
     )
     source_currency = models.CharField(
         verbose_name=_("Source Currency"), max_length=3, choices=CURRENCY_CHOICES
