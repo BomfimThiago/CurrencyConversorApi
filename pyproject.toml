@@ -2,7 +2,7 @@
 profile = "black"
 
 [tool.black]
-py311 = true
+target-version = ['py311']
 line_length=90
 include = '\.pyi?$'
 exclude = '''
@@ -20,13 +20,6 @@ exclude = '''
   | node_modules
 )/
 '''
-
-[tool.mypy]
-plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
-mypy_path = "./src"
-exclude = "tests_*|conftest"
-ignore_missing_imports = true
-
 
 [tool.django-stubs]
 django_settings_module = "core.settings"

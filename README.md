@@ -1,105 +1,90 @@
-Welcome to the Starter Django Project, a solid foundation to kickstart your Django web application development. This starter project is designed to streamline your development process by providing essential structures, configurations, and best practices. Whether you're building a new project from scratch or looking to enhance an existing one, this starter project has you covered.
+## Introduction
 
-## Project Content
+This project implements a REST API for converting currencies using real-time exchange rates. It allows users to convert between different currencies and records each transaction for future reference. The API supports BRL, USD, EUR, and JPY currencies.
+It also allows the user to fetch transactions.
 
-**Docker Ready:** This project is Docker-ready for both local development and seamless deployment to production environments. Dockerization ensures consistent behavior across different setups.
+### Main Technologies in This Project
+- **Python**
+- **Django**: Django framework
+- **Django REST Framework**: APIs
+- **Django REST Framework SimpleJWT**: Authentication
+- **Swagger**: To document the API
+- **Sentry**: To store logs
+- **Docker and Docker Compose**: To make it easier to run the project locally
+- **Postgres**: Database
+- **Pre-Commit**: Pre commit of github with black, isort and flake
+- **Github Actions**: For pipeline
+- **Exchange Rate API Integration**: To get the real-time currency
 
-**Dotenv Configuration:** Centralize your configuration using dotenv files. Easily manage environment-specific variables without exposing sensitive information.
+### Key Features
+- **Users**: Endpoint to register new users and list users.
+- **Currency Conversion**: Logged-in users can request to convert between BRL, USD, EUR, and JPY.
+- **Real-time Exchange Rates**: Fetch real-time exchange rates from an external API. Since we are using the free tier of Exchange Rates API, which only provides the current currency rates in EUR, we use this data to convert to other currencies.
+- **Transaction Recording**: Record each conversion transaction in the database.
+- **Transaction History**: Retrieve the transaction history for a user.
+- **Logging**: Logging it's being stored in Sentry in production and are display in the console on local environment.
+- **Error Handling**: The errors are mostly treated by Django and Django REST Framework automatically. For the integration with Exchange Rates API, an `ExchangeRatesAPIException` was created to handle errors accordingly and give the client a better response.
 
-**Testing Setup with Pytest:** The project includes a robust testing setup with the Pytest framework. Write comprehensive test cases and ensure the reliability of your codebase.
+# How to run
+Rename the file src/api/core/local.example.env to src/api/core/local.env
 
-**Continuous Integration (CI):** The CI workflow is configured to run Pytest, flake8, black, isort, and MyPy. It enforces code quality and compliance with best practices.
+`$ python3.11 -m venv venv`
+`$ source venv/bin/activate`
+`$ make install-req`
+`$ make install-dev-req`
+`$ make install-test-req`
+Change db at DATABASE_URL var at local.env to localhost
 
-**Pre-commit Hooks:** Maintain code consistency with pre-commit hooks for flake8, black, isort, and MyPy. Code formatting and type checking are automatically enforced before each commit.
+`$ docker-compose up -d db`
+`$ python src/manage.py migrate`
+`$ python src/manage.py collectstatic`
+`$ make test`
+`$ python src/manage.py createsuperuser`
+`$ make run`
+Access http://localhost:8000/admin/
 
-**Makefile Convenience:** The included Makefile provides a set of useful commands, streamlining common development tasks and making project management easier.
-
-**Development Tools:** Benefit from development packages like Django Debug Toolbar and Django Extensions for enhanced debugging and exploration.
-
-**API Documentation with Swagger:** Leverage the power of drf-spectacular to automatically generate an interactive Swagger documentation page for your APIs.
-
-**Serializer and Pagination Helpers:** Included helper functions simplify the handling of serializers and pagination, saving development time and effort.
-
-**Integrations**
-- Sentry Integration: Error tracking is seamlessly integrated using Sentry. As soon as you set the SENTRY_DSN environment variable, error tracing is enabled.
-- CloudWatch Logging: CloudWatch logging integration is automated when the necessary environment variables are configured. Monitor application performance and logs with ease.
-
-**Models**
-BaseModel Inheritance: All models except the user model inherit from the BaseModel, providing a consistent and organized data structure.
-
-- User Model: The user model serves as a foundational custom model that can be tailored to fit the requirements of any project.
-- Code Model: The versatile code model can be adapted for various purposes, such as implementing reset password flows.
-- Terms of Agreements Model: Use the terms of agreements model to create agreements and establish relationships with users who have accepted the terms.
-
-![Entity Relations Diagram](./docs/erd.png)
-
-
-## Requirements
-
-* Python (3.11.*) [Installation](https://www.python.org/downloads/ "Installation")
-* Homebrew [Installation](https://brew.sh/ "Installation") 
-
-**IMPORTANT**:
-Docker Compose is used _just_ for development environment. The Dockerfile works without it.
-* Docker [Installation](https://docs.docker.com/desktop/mac/install/ "Installation")
-
-
-## Stack
-
-- Django 4.1
-- Django-rest-framework 3.14.0
-- Postgres
+Running with Docker
+`docker-compose up -d`
+Access http://localhost:8000/admin/
 
 
-## How to run
+## Playing with the API
 
-Rename the file `src/api/core/local.example.env` to `src/api/core/local.env`
-```bash
-$ python3.11 -m venv venv
-$ source venv/bin/activate
-$ make install-req
-$ make install-dev-req
-$ make install-test-req
-```
-Change ```db``` at DATABASE_URL var at local.env to ```localhost```
-```bash
-$ docker-compose up -d db
-$ python src/manage.py migrate
-$ python src/manage.py collectstatic
-$ make test
-$ python src/manage.py createsuperuser
-$ make run
-```
-* Access [http://localhost:8000/admin/](http://localhost:8000/admin/)
+In order to access the API documentation, you can visit `https://currencyconversor.onrender.com/swagger/`.
 
-## Running with Docker
+### Steps to Use the API
 
-```bash
-docker-compose up -d
-```
+1. **Create a User**: 
+   - Go to the user registration API: `https://currencyconversor.onrender.com/swagger/#/users/users_create`.
+   - The username must be unique.
 
-* Access http://localhost:8000/admin/
+2. **Log In**:
+   - Go to the token endpoint: `https://currencyconversor.onrender.com/swagger/#/token/token_create`.
+   - Enter your username and password to obtain an access token.
+   - Copy the access token.
+
+3. **Authorize**:
+   - In the swagger-ui, click the `Authorize` button in the top right.
+   - Paste the access token you copied in the previous step.
+
+4. **Create a Transaction**:
+   - Convert a currency to another (e.g., USD to BRL) using the transaction creation API: `https://currencyconversor.onrender.com/swagger/#/transactions/transactions_create`.
+
+5. **Get Transactions**:
+   - Retrieve transactions filtered by your user using the transaction listing API: `https://currencyconversor.onrender.com/swagger/#/transactions/transactions_list`.
 
 
-## Database
+## Discussion
 
-Running the database on the latest PostgreSQL Docker container in the port `5432`; the connection is defined by the `dj-database-url` package. There's a race condition script to avoid running Django before the database goes up.
+There are a few key points that I would discuss in a real scenario to think more deeply about the architecture of this project.
 
+1. **Exchange Rate API Request Limit**
+   - The current limit per month is 250 requests, which is quite low. How many requests would be enough to make this API reliable at all times? In a scenario where we consume all our requests in a month before the end of the month, this would be a critical design failure.
+   - Ideally, we wouldn't need to worry about the request limit per month because the project could pay for a higher tier. If this is not feasible, a caching strategy could be implemented to avoid exhausting the request limit before the end of the month. This is a tradeoff because we would have to accept not being "real-time," as there would be a delay in the currency information for the hours we get the information from the cache instead of the API integration.
 
-## Styleguide
+2. **List of Transactions of Other Users**
+   - Should we have roles in this project, like managers and normal users? If so, perhaps a manager could see the list of transactions of all users, while 'normal' users could only see their own list of transactions.
 
-Before utilizing this starter, we highly recommend reviewing our comprehensive styleguide to gain a clear understanding of how it is intended to be used.
-
-[Read the Styleguide](docs/styleguide.md)
-
-The styleguide provides essential guidelines and best practices for various aspects of the project, including:
-
-**Models:** Tips and conventions for creating well-structured Django models, defining validation methods, and using constraints.
-**APIs:** Guidelines for versioning APIs, organizing modules, creating views, and utilizing serializers to handle data validation and transformation.
-**Views:** Recommendations for structuring API views, separating business logic from views, and ensuring consistent JSON response formats.
-and more...
-
-By following the styleguide, you can maintain a consistent codebase, improve code readability, and enhance collaboration among team members. It serves as a valuable resource to ensure that the project adheres to our development standards and best practices.
-
-Make sure to refer to the styleguide regularly during the development process to stay aligned with our team's coding conventions and ensure a high-quality end product.
-
+3. **User unique**
+   - Here I'm using the username as unique but I think the best to authenticate the app would be via OAuth2 or if 
+   a JWT token is really necessary, then the email should be the key to validate the user.
